@@ -1,0 +1,14 @@
+{
+  "name": "john-kibue-portfolio",
+  "version": "1.0.0",
+  "description": "John Kibue Cybersecurity Portfolio",
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.9"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
+}

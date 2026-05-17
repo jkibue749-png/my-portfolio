@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>John Kibue | Penetration Tester</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050a0e;--bg2:#0a1219;--bg3:#0e1a24;
+  --green:#00ff88;--green2:#00cc6a;--green-dim:rgba(0,255,136,0.10);
+  --red:#ff3355;--blue:#00aaff;--amber:#ffaa00;
+  --text:#c8d8e8;--text-dim:#6a8899;
+  --border:rgba(0,255,136,0.22);--border2:rgba(0,255,136,0.08);
+  --mono:'Share Tech Mono',monospace;--display:'Orbitron',monospace;--body:'Rajdhani',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);pointer-events:none;z-index:9999}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,0.025) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
+.corner{position:fixed;width:60px;height:60px;z-index:100;pointer-events:none}
+.corner-tl{top:0;left:0;border-top:2px solid var(--green);border-left:2px solid var(--green)}
+.corner-tr{top:0;right:0;border-top:2px solid var(--green);border-right:2px solid var(--green)}
+.corner-bl{bottom:0;left:0;border-bottom:2px solid var(--green);border-left:2px solid var(--green)}
+.corner-br{bottom:0;right:0;border-bottom:2px solid var(--green);border-right:2px solid var(--green)}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:58px;background:rgba(5,10,14,0.95);border-bottom:1px solid var(--border2);backdrop-filter:blur(10px)}
+.nav-logo{font-family:var(--display);font-size:12px;font-weight:900;color:var(--green);letter-spacing:4px;text-decoration:none;text-transform:uppercase}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;letter-spacing:2px;text-transform:uppercase;transition:color 0.2s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--green);transform:scaleX(0);transition:transform 0.2s}
+.nav-links a:hover{color:var(--green)}.nav-links a:hover::after{transform:scaleX(1)}
+.nav-status{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:1px}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,136,0.4)}50%{opacity:0.5;box-shadow:0 0 0 4px rgba(0,255,136,0)}}
+main{position:relative;z-index:1;padding-top:58px}
+section{padding:5rem 2.5rem;max-width:1040px;margin:0 auto}
+.hero{min-height:calc(100vh - 58px);display:flex;flex-direction:column;justify-content:center;padding:0 2.5rem;max-width:1040px;margin:0 auto}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;color:var(--green);letter-spacing:5px;text-transform:uppercase;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.6s 0.2s forwards}
+.hero-name{font-family:var(--display);font-size:clamp(3rem,7vw,5.5rem);font-weight:900;color:#fff;line-height:1;letter-spacing:-2px;margin-bottom:0.5rem;opacity:0;animation:fadeUp 0.6s 0.4s forwards}
+.hero-name .accent{color:var(--green)}
+.hero-role{font-family:var(--display);font-size:clamp(0.9rem,2vw,1.2rem);font-weight:400;color:var(--text-dim);letter-spacing:5px;text-transform:uppercase;margin-bottom:2.5rem;opacity:0;animation:fadeUp 0.6s 0.6s forwards}
+.hero-terminal{font-family:var(--mono);font-size:12px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem 1.75rem;max-width:580px;margin-bottom:2.5rem;opacity:0;animation:fadeUp 0.6s 0.8s forwards;position:relative;overflow:hidden}
+.hero-terminal::before{content:'● ● ●';position:absolute;top:10px;left:14px;font-size:10px;color:var(--text-dim);letter-spacing:5px}
+.hero-terminal-inner{margin-top:1.5rem}
+.tl{margin:4px 0}.t-prompt{color:var(--green)}.t-cmd{color:#fff}.t-out{color:var(--text-dim)}.t-str{color:var(--amber)}.t-path{color:var(--blue)}
+.t-cursor{display:inline-block;width:8px;height:12px;background:var(--green);vertical-align:middle;animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.scan-line{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent);animation:scanAcross 4s linear infinite}
+@keyframes scanAcross{0%{top:0;opacity:0.8}100%{top:100%;opacity:0}}
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp 0.6s 1s forwards}
+.btn{font-family:var(--mono);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;padding:13px 28px;border-radius:2px;cursor:pointer;text-decoration:none;transition:all 0.2s;display:inline-block;border:1px solid transparent}
+.btn-primary{background:var(--green);color:#000;border-color:var(--green);font-weight:700}.btn-primary:hover{background:transparent;color:var(--green)}
+.btn-ghost{background:transparent;color:var(--green);border-color:var(--border)}.btn-ghost:hover{border-color:var(--green);background:var(--green-dim)}
+.hero-location{margin-top:2rem;font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:2px;opacity:0;animation:fadeUp 0.6s 1.2s forwards}
+.hero-location span{color:var(--green)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.section-header{display:flex;align-items:center;gap:1rem;margin-bottom:3rem}
+.section-num{font-family:var(--mono);font-size:10px;color:var(--green);border:1px solid var(--border);padding:4px 10px;border-radius:2px;letter-spacing:2px;white-space:nowrap}
+.section-title{font-family:var(--display);font-size:clamp(1.2rem,2.5vw,1.7rem);font-weight:700;color:#fff;letter-spacing:2px;text-transform:uppercase}
+.section-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.about-grid{display:grid;grid-template-columns:3fr 2fr;gap:3rem;align-items:start}
+.about-bio p{font-size:15px;color:var(--text);line-height:1.9;font-weight:300;margin-bottom:1rem}
+.about-bio strong{color:var(--green);font-weight:600}
+.about-sidebar{display:flex;flex-direction:column;gap:1rem}
+.info-block{background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:1.25rem;position:relative;overflow:hidden;transition:border-color 0.2s}
+.info-block:hover{border-color:var(--border)}
+.info-block::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:var(--green);opacity:0.5}
+.info-label{font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.info-value{font-family:var(--body);font-size:14px;color:var(--text);font-weight:600}
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.skill-card{background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:1.5rem;transition:border-color 0.2s,background 0.2s;position:relative;overflow:hidden}
+.skill-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);opacity:0;transition:opacity 0.3s}
+.skill-card:hover{border-color:var(--border);background:var(--bg3)}.skill-card:hover::after{opacity:0.5}
+.skill-icon{font-size:1.75rem;margin-bottom:0.75rem;display:block}
+.skill-cat{font-family:var(--display);font-size:10px;font-weight:700;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem}
+.skill-tags{display:flex;flex-wrap:wrap;gap:6px}
+.skill-tag{font-family:var(--mono);font-size:10px;color:var(--text-dim);background:var(--bg3);border:1px solid var(--border2);padding:3px 9px;border-radius:2px;letter-spacing:1px}
+.projects-header-note{font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:1px;margin-bottom:2rem;border-left:2px solid var(--green);padding-left:1rem;line-height:1.8}
+.projects-header-note span{color:var(--green)}
+.projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.project-card{background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:1.75rem;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s}
+.project-card:hover{border-color:var(--border);transform:translateY(-3px)}
+.project-card.placeholder{border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:180px}
+.project-card.placeholder:hover{border-color:var(--green)}
+.placeholder-icon{font-size:2rem;margin-bottom:0.75rem;opacity:0.3}
+.placeholder-text{font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:1px;line-height:1.8}
+.placeholder-text span{color:var(--green);display:block;margin-bottom:4px}
+.platforms-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.platform-card{background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:2rem;display:flex;gap:1.25rem;align-items:flex-start;transition:border-color 0.2s;text-decoration:none}
+.platform-card:hover{border-color:var(--border)}
+.platform-icon-wrap{width:48px;height:48px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:11px;font-weight:900;letter-spacing:1px;flex-shrink:0}
+.thm{background:rgba(0,255,136,0.1);color:var(--green);border:1px solid var(--border)}
+.htb{background:rgba(0,170,255,0.1);color:var(--blue);border:1px solid rgba(0,170,255,0.3)}
+.platform-name{font-family:var(--display);font-size:13px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:4px}
+.platform-user{font-family:var(--mono);font-size:11px;color:var(--green);letter-spacing:1px;margin-bottom:8px}
+.platform-desc{font-size:13px;color:var(--text-dim);font-weight:300;line-height:1.6}
+.certs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.cert-card{background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:1.5rem;text-align:center;transition:border-color 0.2s}
+.cert-card:hover{border-color:var(--border)}
+.cert-abbr{font-family:var(--display);font-size:1.6rem;font-weight:900;color:var(--green);margin-bottom:6px}
+.cert-name{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:1px}
+.cert-badge{font-family:var(--mono);font-size:9px;letter-spacing:2px;padding:3px 10px;border-radius:2px;display:inline-block;margin-top:10px}
+.badge-studying{color:var(--amber);background:rgba(255,170,0,0.08);border:1px solid rgba(255,170,0,0.3)}
+.badge-planned{color:var(--text-dim);background:var(--bg3);border:1px solid var(--border2)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.contact-intro{font-size:15px;color:var(--text-dim);line-height:1.9;font-weight:300}
+.contact-intro strong{color:var(--green)}
+.contact-links{display:flex;flex-direction:column;gap:0.75rem;margin-top:1.5rem}
+.contact-link{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:11px;color:var(--text-dim);text-decoration:none;padding:12px 16px;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;letter-spacing:1px;transition:border-color 0.2s,color 0.2s}
+.contact-link:hover{border-color:var(--border);color:var(--green)}
+.link-icon{font-size:1.1rem;flex-shrink:0}.link-label{flex:1}
+.link-arrow{opacity:0.4;transition:opacity 0.2s,transform 0.2s}
+.contact-link:hover .link-arrow{opacity:1;transform:translateX(3px)}
+.contact-form{background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:2rem}
+.form-title{font-family:var(--display);font-size:11px;font-weight:700;color:var(--green);letter-spacing:3px;text-transform:uppercase;margin-bottom:1.5rem}
+.form-group{margin-bottom:1.25rem}
+.form-group label{display:block;font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.form-group input,.form-group textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padding:10px 14px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;transition:border-color 0.2s;letter-spacing:1px;resize:vertical}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--green)}
+.form-group textarea{min-height:100px}
+.form-btn{width:100%;background:var(--green);color:#000;border:1px solid var(--green);font-family:var(--mono);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;padding:13px;border-radius:2px;cursor:pointer;font-weight:700;transition:all 0.2s}
+.form-btn:hover{background:transparent;color:var(--green)}
+.form-btn:disabled{opacity:0.5;cursor:not-allowed}
+.form-msg{font-family:var(--mono);font-size:11px;letter-spacing:1px;padding:10px 14px;border-radius:2px;margin-top:1rem;display:none}
+.form-msg.success{color:var(--green);background:var(--green-dim);border:1px solid var(--border);display:block}
+.form-msg.error{color:var(--red);background:rgba(255,51,85,0.08);border:1px solid rgba(255,51,85,0.3);display:block}
+footer{border-top:1px solid var(--border2);padding:2rem 2.5rem;max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.footer-copy{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:2px}
+.footer-copy span{color:var(--green)}
+.footer-tag{font-family:var(--mono);font-size:10px;color:var(--border);letter-spacing:1px}
+.divider{max-width:1040px;margin:0 auto;padding:0 2.5rem;height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s,transform 0.6s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:768px){
+  nav{padding:0 1.25rem}.nav-links{gap:1.25rem}
+  section,.hero,footer{padding-left:1.25rem;padding-right:1.25rem}
+  .hero-name{font-size:2.5rem}
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .skills-grid,.certs-grid{grid-template-columns:1fr 1fr}
+  .projects-grid,.platforms-grid{grid-template-columns:1fr}
+  .nav-status{display:none}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+
+<nav>
+  <a href="#home" class="nav-logo">JK//SEC</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#platforms">Platforms</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-status"><div class="status-dot"></div>AVAILABLE FOR OPPORTUNITIES</div>
+</nav>
+
+<main>
+  <div class="hero" id="home">
+    <div class="hero-eyebrow">// CYBERSECURITY PORTFOLIO</div>
+    <h1 class="hero-name">JOHN<br><span class="accent">KIBUE</span></h1>
+    <div class="hero-role">Aspiring Penetration Tester</div>
+    <div class="hero-terminal">
+      <div class="scan-line"></div>
+      <div class="hero-terminal-inner">
+        <div class="tl"><span class="t-prompt">root@kali</span><span class="t-out">:</span><span class="t-path">~/</span><span class="t-out">$ </span><span class="t-cmd">whoami</span></div>
+        <div class="tl"><span class="t-out">John Kibue — Cybersecurity Student, Eldoret, Kenya</span></div>
+        <div class="tl" style="margin-top:8px"><span class="t-prompt">root@kali</span><span class="t-out">:</span><span class="t-path">~/</span><span class="t-out">$ </span><span class="t-cmd">cat mission.txt</span></div>
+        <div class="tl"><span class="t-str">"Passionate about ethical hacking & penetration testing.</span></div>
+        <div class="tl"><span class="t-str"> Future professional pentester in the making."</span></div>
+        <div class="tl" style="margin-top:8px"><span class="t-prompt">root@kali</span><span class="t-out">:</span><span class="t-path">~/</span><span class="t-out">$ </span><span class="t-cursor"></span></div>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#contact" class="btn btn-ghost">Get In Touch</a>
+      <a href="https://github.com/jkibue749-png" target="_blank" class="btn btn-ghost">GitHub</a>
+    </div>
+    <div class="hero-location">📍 <span>Eldoret City, Kenya</span> &nbsp;|&nbsp; Open to remote opportunities</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <section id="about" class="reveal">
+    <div class="section-header">
+      <span class="section-num">01 // ABOUT</span>
+      <h2 class="section-title">Who I Am</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-bio">
+        <p>Ever since I was young, I've been fascinated by <strong>how hackers operate</strong> — the way they think, the tools they use, and the problems they solve. That curiosity never went away; it grew into a passion.</p>
+        <p>I love <strong>everything about computers</strong> — from the way systems talk to each other at the network level, to digging into binaries and finding out what's really going on under the hood. Cybersecurity is where my curiosity meets purpose.</p>
+        <p>My goal is to become a <strong>professional penetration tester</strong> — someone who thinks like an attacker to protect defenders. I'm currently building my skills through hands-on labs, CTF platforms, and real-world tools like <strong>Kali Linux</strong> and <strong>Labtainer</strong>.</p>
+      </div>
+      <div class="about-sidebar">
+        <div class="info-block"><div class="info-label">// Status</div><div class="info-value">Student — Actively Learning</div></div>
+        <div class="info-block"><div class="info-label">// Focus Areas</div><div class="info-value">Penetration Testing · Malware Analysis · Cloud Security</div></div>
+        <div class="info-block"><div class="info-label">// Location</div><div class="info-value">Eldoret City, Kenya 🇰🇪</div></div>
+        <div class="info-block"><div class="info-label">// Currently</div><div class="info-value">Hacking labs on TryHackMe & HackTheBox</div></div>
+        <div class="info-block"><div class="info-label">// Email</div><div class="info-value" style="font-size:13px">jkibue749@gmail.com</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="skills" class="reveal">
+    <div class="section-header">
+      <span class="section-num">02 // SKILLS</span>
+      <h2 class="section-title">Arsenal</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card"><span class="skill-icon">🔴</span><div class="skill-cat">Penetration Testing</div><div class="skill-tags"><span class="skill-tag">Kali Linux</span><span class="skill-tag">Labtainer</span><span class="skill-tag">Nmap</span><span class="skill-tag">Recon</span><span class="skill-tag">Enumeration</span></div></div>
+      <div class="skill-card"><span class="skill-icon">🧬</span><div class="skill-cat">Malware Analysis</div><div class="skill-tags"><span class="skill-tag">Reverse Engineering</span><span class="skill-tag">Static Analysis</span><span class="skill-tag">Dynamic Analysis</span><span class="skill-tag">Sandboxing</span></div></div>
+      <div class="skill-card"><span class="skill-icon">☁️</span><div class="skill-cat">Cloud Security</div><div class="skill-tags"><span class="skill-tag">IAM Concepts</span><span class="skill-tag">Cloud Threats</span><span class="skill-tag">Misconfigurations</span><span class="skill-tag">Cloud Labs</span></div></div>
+      <div class="skill-card"><span class="skill-icon">🌐</span><div class="skill-cat">Networking</div><div class="skill-tags"><span class="skill-tag">TCP/IP</span><span class="skill-tag">DNS</span><span class="skill-tag">HTTP/S</span><span class="skill-tag">Protocols</span><span class="skill-tag">Packet Analysis</span></div></div>
+      <div class="skill-card"><span class="skill-icon">💻</span><div class="skill-cat">Operating Systems</div><div class="skill-tags"><span class="skill-tag">Kali Linux</span><span class="skill-tag">Linux CLI</span><span class="skill-tag">Bash Scripting</span><span class="skill-tag">Windows</span></div></div>
+      <div class="skill-card"><span class="skill-icon">🏁</span><div class="skill-cat">CTF & Labs</div><div class="skill-tags"><span class="skill-tag">TryHackMe</span><span class="skill-tag">HackTheBox</span><span class="skill-tag">Labtainer Labs</span><span class="skill-tag">OSINT</span></div></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="projects" class="reveal">
+    <div class="section-header">
+      <span class="section-num">03 // PROJECTS</span>
+      <h2 class="section-title">Projects</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="projects-header-note"><span>// NOTE FROM JOHN</span>Currently building out my project portfolio. This space is reserved for upcoming lab writeups, CTF solutions, and security tools. Check back soon — or follow my GitHub for the latest.</div>
+    <div class="projects-grid">
+      <div class="project-card placeholder"><div class="placeholder-icon">🔬</div><div class="placeholder-text"><span>// COMING SOON</span>Penetration Testing Lab Writeup<span style="color:var(--border);font-size:10px;margin-top:6px;display:block">TryHackMe · Kali Linux</span></div></div>
+      <div class="project-card placeholder"><div class="placeholder-icon">🧬</div><div class="placeholder-text"><span>// COMING SOON</span>Malware Analysis Report<span style="color:var(--border);font-size:10px;margin-top:6px;display:block">Static + Dynamic Analysis</span></div></div>
+      <div class="project-card placeholder"><div class="placeholder-icon">☁️</div><div class="placeholder-text"><span>// COMING SOON</span>Cloud Security Misconfiguration Lab<span style="color:var(--border);font-size:10px;margin-top:6px;display:block">Cloud Security · IAM</span></div></div>
+      <div class="project-card placeholder"><div class="placeholder-icon">🏁</div><div class="placeholder-text"><span>// COMING SOON</span>CTF Challenge Writeup<span style="color:var(--border);font-size:10px;margin-top:6px;display:block">HackTheBox · OSINT</span></div></div>
+    </div>
+    <div style="text-align:center;margin-top:2rem"><a href="https://github.com/jkibue749-png" target="_blank" class="btn btn-ghost">View GitHub →</a></div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="platforms" class="reveal">
+    <div class="section-header">
+      <span class="section-num">04 // PLATFORMS</span>
+      <h2 class="section-title">Where I Train</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="platforms-grid">
+      <a href="https://tryhackme.com/dashboard" target="_blank" class="platform-card">
+        <div class="platform-icon-wrap thm">THM</div>
+        <div><div class="platform-name">TryHackMe</div><div class="platform-user">// Active Learner</div><div class="platform-desc">Working through guided learning paths covering web hacking, network security, privilege escalation, and more.</div></div>
+      </a>
+      <a href="https://www.hackthebox.com" target="_blank" class="platform-card">
+        <div class="platform-icon-wrap htb">HTB</div>
+        <div><div class="platform-name">HackTheBox</div><div class="platform-user">// Active Member</div><div class="platform-desc">Challenging real-world machines and labs to sharpen offensive security skills and develop a true hacker's mindset.</div></div>
+      </a>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="certs" class="reveal">
+    <div class="section-header">
+      <span class="section-num">05 // CERTS</span>
+      <h2 class="section-title">Certifications</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="certs-grid">
+      <div class="cert-card"><div class="cert-abbr">CEH</div><div class="cert-name">Certified Ethical Hacker</div><div class="cert-badge badge-planned">Planned</div></div>
+      <div class="cert-card"><div class="cert-abbr">SEC+</div><div class="cert-name">CompTIA Security+</div><div class="cert-badge badge-studying">Studying</div></div>
+      <div class="cert-card"><div class="cert-abbr">OSCP</div><div class="cert-name">Offensive Security Certified Pro</div><div class="cert-badge badge-planned">Goal</div></div>
+    </div>
+    <p style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-top:1.5rem;letter-spacing:1px;text-align:center">// Actively studying — certs to be added as earned</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="contact" class="reveal">
+    <div class="section-header">
+      <span class="section-num">06 // CONTACT</span>
+      <h2 class="section-title">Get In Touch</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <p class="contact-intro">I'm always open to connecting with fellow security enthusiasts, mentors, and anyone building in the cybersecurity space. Whether you want to <strong>collaborate on a CTF</strong>, discuss penetration testing, or just talk hacking — reach out.</p>
+        <div class="contact-links">
+          <a href="mailto:jkibue749@gmail.com" class="contact-link"><span class="link-icon">📧</span><span class="link-label">jkibue749@gmail.com</span><span class="link-arrow">→</span></a>
+          <a href="https://github.com/jkibue749-png" target="_blank" class="contact-link"><span class="link-icon">🐙</span><span class="link-label">github.com/jkibue749-png</span><span class="link-arrow">→</span></a>
+          <a href="https://www.linkedin.com/in/john-kibue-3127973b8/" target="_blank" class="contact-link"><span class="link-icon">💼</span><span class="link-label">linkedin.com/in/john-kibue</span><span class="link-arrow">→</span></a>
+          <a href="https://tryhackme.com/dashboard" target="_blank" class="contact-link"><span class="link-icon">🚩</span><span class="link-label">TryHackMe Profile</span><span class="link-arrow">→</span></a>
+        </div>
+      </div>
+      <div class="contact-form">
+        <div class="form-title">// Send a Message</div>
+        <div class="form-group"><label>Name</label><input type="text" id="f-name" placeholder="Your name"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="f-email" placeholder="your@email.com"></div>
+        <div class="form-group"><label>Message</label><textarea id="f-msg" placeholder="Say hello, propose a collab, ask a question..."></textarea></div>
+        <button class="form-btn" id="send-btn" onclick="sendMessage()">Send Message →</button>
+        <div class="form-msg" id="form-msg"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-copy">© 2025 <span>John Kibue</span> — All rights reserved</div>
+  <div class="footer-tag">// Built with curiosity & caffeine</div>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Active nav
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  document.querySelectorAll('section, .hero').forEach(s => {
+    if(window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#'+current ? 'var(--green)' : '';
+  });
+});
+
+// Contact form → Netlify Function
+async function sendMessage() {
+  const name = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const message = document.getElementById('f-msg').value.trim();
+  const btn = document.getElementById('send-btn');
+  const msgEl = document.getElementById('form-msg');
+
+  if (!name || !email || !message) {
+    msgEl.className = 'form-msg error';
+    msgEl.textContent = '// ERROR: All fields are required.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  msgEl.className = 'form-msg';
+
+  try {
+    const res = await fetch('/.netlify/functions/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, message })
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      msgEl.className = 'form-msg success';
+      msgEl.textContent = '// SUCCESS: Message sent! I\'ll get back to you soon.';
+      document.getElementById('f-name').value = '';
+      document.getElementById('f-email').value = '';
+      document.getElementById('f-msg').value = '';
+    } else {
+      throw new Error(data.error || 'Unknown error');
+    }
+  } catch (err) {
+    msgEl.className = 'form-msg error';
+    msgEl.textContent = '// ERROR: ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send Message →';
+  }
+}
+</script>
+</body>
+</html>
